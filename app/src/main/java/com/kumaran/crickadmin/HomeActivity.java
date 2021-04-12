@@ -79,6 +79,7 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 setPlayers();
+                //sets player list in spinner
             }
 
             @Override
