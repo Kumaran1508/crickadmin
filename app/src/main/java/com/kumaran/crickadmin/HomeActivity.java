@@ -102,6 +102,9 @@ public class HomeActivity extends AppCompatActivity {
                         Map<String,Object> player = (Map<String, Object>) playerscores.get(keylist.get(playerSpinner.getSelectedItemPosition()));
                         long x = (long) player.get("runs") + Long.valueOf(runSpinner.getSelectedItem().toString());
                         player.put("runs",x);
+
+                        firebaseFireStore.collection("live_match").document("lastrun").update("run",Long.valueOf(runSpinner.getSelectedItem().toString()));
+
                         if(!bonusRun.isChecked()) {
                             x=(long) player.get("balls")+1;
                             player.put("balls",x);
@@ -152,9 +155,9 @@ public class HomeActivity extends AppCompatActivity {
                         if(!bonusRun.isChecked()){
                             List<String> overs = (List<String>) teams.get("overs");
                             int dotPos = overs.get(position).indexOf(".");
-                            if(overs.get(position).charAt(dotPos+1)=='6')
+                            if(overs.get(position).charAt(dotPos+1)=='5')
                                 overs.set(position,
-                                        String.valueOf(Integer.valueOf(overs.get(position).substring(0,dotPos-1))+1)+".0");
+                                        String.valueOf(Integer.valueOf(overs.get(position).substring(0,dotPos))+1)+".0");
                             else
                                 overs.set(position,overs.get(position).substring(0,dotPos+1)+String.valueOf(Integer.valueOf(overs.get(position).substring(dotPos+1))+1));
                         }
