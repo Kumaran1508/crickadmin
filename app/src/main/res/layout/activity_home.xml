@@ -117,6 +117,46 @@
         android:id="@+id/edit_btn"/>
 
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Team"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"/>
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="20dp"
+        android:id="@+id/team_spinner2"
+        android:layout_marginTop="-20dp"
+        android:layout_gravity="right"/>
+
+
+    <EditText
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp"
+        android:hint="Add Player"
+        android:id="@+id/playernameinput"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginTop="-40dp"
+        android:layout_gravity="right"
+        android:layout_marginRight="20dp"
+        android:backgroundTint="@color/red"
+        android:text="add"
+        android:id="@+id/add_player"/>
+
+
+
+
 
 
 

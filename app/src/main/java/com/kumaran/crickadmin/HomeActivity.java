@@ -4,21 +4,26 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +36,10 @@ public class HomeActivity extends AppCompatActivity {
     private Switch wicket;
     private ProgressBar progressBar;
     private Button update;
+
+    private Spinner teamSpinner2;
+    private EditText playername;
+    private Button addplayer;
 
     FirebaseFirestore firebaseFireStore = FirebaseFirestore.getInstance();
 
@@ -47,6 +56,8 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+
+
         teamSpinner = findViewById(R.id.team_spinner);
         playerSpinner = findViewById(R.id.player_spinner);
         runSpinner = findViewById(R.id.run_spinner);
@@ -54,6 +65,10 @@ public class HomeActivity extends AppCompatActivity {
         wicket = findViewById(R.id.wicket);
         progressBar = findViewById(R.id.progressbar);
         update = findViewById(R.id.edit_btn);
+
+        teamSpinner2 = findViewById(R.id.team_spinner2);
+        playername = findViewById(R.id.playernameinput);
+        addplayer = findViewById(R.id.add_player);
 
         runs.add("0");
         runs.add("1");
@@ -69,6 +84,8 @@ public class HomeActivity extends AppCompatActivity {
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 teams = (ArrayList<String>) documentSnapshot.get("name");
                 teamSpinner.setAdapter(new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item,teams));
+                teamSpinner2.setAdapter(new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item,teams));
+
 
 
 
@@ -171,9 +188,55 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+        addplayer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (playername.getText().toString().length()<2){
+                    Toast.makeText(HomeActivity.this, "Invalid Player Name", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                HashMap<String,Object> player= new HashMap<>();
+                player.put("name",playername.getText().toString());
+                player.put("runs",0);
+                player.put("balls",0);
+                player.put("fours",0);
+                player.put("sixes",0);
+                player.put("strike_rate","100");
+                player.put("status","NOT OUT");
+
+                firebaseFireStore.collection("live_match").document("team"+(teamSpinner2.getSelectedItemPosition()+1)).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        firebaseFireStore.collection("live_match").document("team"+(teamSpinner2.getSelectedItemPosition()+1)).update("player"+String.valueOf(documentSnapshot.getData().size()+1),player);
+                    }
+                });
+
+                playername.setText("");
+
+            }
+        });
 
 
+    }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.home_menu, menu);
+
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.logout:
+                FirebaseAuth.getInstance().signOut();
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void setPlayers(){
